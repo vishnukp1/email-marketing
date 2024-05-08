@@ -3,17 +3,14 @@ const db = require('./src/db/db');
 const userRoutes = require("./src/routes/userRoutes");
 const flowRoutes = require("./src/routes/flowRoutes");
 const cors = require('cors');
-const morgan = require('morgan'); // Import the morgan middleware
+const morgan = require('morgan'); 
 require('dotenv').config();
 
 const app = express();
 
 app.use(express.json());
 
-// Use Morgan middleware for logging HTTP requests
 app.use(morgan('dev'));
-
-// Enable CORS
 
 app.use(cors());
 
