@@ -1,11 +1,11 @@
 import { SignIn, SignUp } from "../cores";
-import FlowPageWithAuth from "../pages/drapdrp/FlowPageWithAuth";
+import FlowPageWithAuth from "../pages/flow-page/FlowPageWithAuth";
 import { homePath, signInPath, signUpPath } from "./route.constant";
 
 const routes = [
   {
     path: homePath,
-    component: FlowPageWithAuth, // Use the wrapped component
+    component: FlowPageWithAuth, 
     exact: true,
   },
   {
