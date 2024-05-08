@@ -22,7 +22,7 @@ export default function SignIn() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/api/login", formData);
+      const response = await axios.post("https://ems-server-side.onrender.com/api/login", formData);
       const { token } = response.data;
       localStorage.setItem("token", token); // Save token to local storage
       navigate("/");
