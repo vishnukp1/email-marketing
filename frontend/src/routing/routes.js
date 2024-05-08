@@ -1,25 +1,23 @@
-
-
-
 import { SignIn, SignUp } from "../cores";
-import DnDFlow from "../pages/drapdrp/DnDFlow";
-import { homePath, signInPath,signUpPath} from "./route.constant";
+import FlowPage from "../pages/drapdrp/FlowPage";
+
+import { homePath, signInPath, signUpPath } from "./route.constant";
 
 const routes = [
   {
     path: homePath,
-    component: DnDFlow,
+    component: FlowPage,
     exact: true,
   },
 
   {
-    path:signInPath,
-    component:SignIn,
+    path: signInPath,
+    component: SignIn,
     exact: true,
   },
   {
-    path:signUpPath,
-    component:SignUp,
+    path: signUpPath,
+    component: SignUp,
     exact: true,
   },
 ];

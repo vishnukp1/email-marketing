@@ -1,9 +1,9 @@
+require("dotenv").config();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const userSchema = require("../models/userSchema");
 
 module.exports = {
-
   userRegister: async (req, res) => {
     const { name, email, password } = req.body;
 
@@ -19,44 +19,36 @@ module.exports = {
     res.status(200).json({
       status: "Success",
       message: "registarion successfull",
-      data:user,
+      data: user,
     });
   },
 
-
-
- userLogin: async (req, res) => {
+  userLogin: async (req, res) => {
     const { email, password } = req.body;
 
-  
-      // Find the user by email
-      const user = await userSchema.findOne({ email });
+    const user = await userSchema.findOne({ email });
 
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
 
-      // Check if the password is correct
-      const validPassword = await bcrypt.compare(password, user.password);
+    const validPassword = await bcrypt.compare(password, user.password);
 
-      if (!validPassword) {
-        return res.status(401).json({ error: "Invalid password" });
-      }
+    if (!validPassword) {
+      return res.status(401).json({ error: "Invalid password" });
+    }
+    console.log(process.env.USER_ACCES_TOKEN_SECRET, "login");
 
-      // Generate JWT
-      const token = jwt.sign({ email: user.email }, process.env.USER_ACCESS_TOKEN_SECRET, {
-        expiresIn: "1h" // Token expiration time
-      });
+    const token = jwt.sign(
+      { email: user.email, id: user._id },
+      process.env.USER_ACCES_TOKEN_SECRET
+    );
 
-      // Send JWT to client
-      res.status(200).json({
-        status: "Success",
-        message: "Login successful",
-        token
-      });
-   
-  }
-
-
-
+    res.status(200).json({
+      status: "Success",
+      message: "Login successful",
+      token,
+      data: user,
+    });
+  },
 };

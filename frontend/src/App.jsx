@@ -1,11 +1,9 @@
 import { AppLayout } from "./cores";
 
-
 function App() {
   return (
     <>
       <AppLayout />
-     
     </>
   );
 }

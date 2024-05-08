@@ -1,18 +1,7 @@
 import { Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import { routes } from "../../routing/intex";
-// import { LoaderMiddleware, Loader } from "../../common/index";
 import { AppHeader } from "../index";
-
-// const ComponentWithLoader = ({ children }) => {
-//   return (
-//     <LoaderMiddleware>
-//       <Loader >
-//       {children}
-//       </Loader>
-//     </LoaderMiddleware>
-//   );
-// };
 
 const AppLayout = () => {
   return (

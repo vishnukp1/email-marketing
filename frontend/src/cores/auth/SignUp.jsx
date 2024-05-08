@@ -1,104 +1,104 @@
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
+import { useState } from "react";
+import { Button, TextField, Typography, Container } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 
 const defaultTheme = createTheme();
 
 export default function SignUp() {
   const navigate = useNavigate();
-  const handleSubmit = (event) => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    navigate("/");
-    const data = new FormData(event.currentTarget);
-    console.log({
-      name: data.get("name"),
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    try {
+      await axios.post("http://localhost:3000/api/register", formData);
+      navigate("/signin");
+    } catch (error) {
+      console.error("Error signing up:", error);
+    }
   };
 
   return (
     <div className="flex flex-col justify-center h-full pb-16 ">
       <ThemeProvider theme={defaultTheme}>
         <Container component="main" maxWidth="xs" className="bg-white">
-          <CssBaseline />
-          <Box
-            sx={{
-              marginTop: 8,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
+          <Typography
+            component="h1"
+            variant="h4"
+            className="text-center pt-8"
           >
-            <div style={{ color: "#204289" }} className="font-semibold text-sm">
-              Powered By <span style={{ color: "#F46524" }}>E-Market</span>
-            </div>
-
-            <Typography component="h1" variant="h4" className="pt-4">
-              Welcome!
-            </Typography>
-            <Typography component="h1" variant="h6" className="pt-0">
-              Login To get Started
-            </Typography>
-            <Box
-              component="form"
-              onSubmit={handleSubmit}
-              noValidate
-              sx={{ mt: 1 }}
+            Welcome!
+          </Typography>
+          <Typography component="h1" variant="h6" className="text-center">
+            Sign Up To Get Started
+          </Typography>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="name"
+              label="Name"
+              name="name"
+              autoComplete="name"
+              autoFocus
+              value={formData.name}
+              onChange={handleChange}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              value={formData.email}
+              onChange={handleChange}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
             >
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="name"
-                label="Name"
-                name="name"
-                autoComplete="name"
-                autoFocus
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-              />
-
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
-                Sign Up
-              </Button>
-            </Box>
-
-            <Typography component="p" style={{marginBottom:"10px"}} variant="body2" className="forgot-password text-right">
-              I didn't signin {" "}
-              <Link to="/signin" style={{ color: "red" }}>
-                Sign In
-              </Link>
-            </Typography>
-          </Box>
+              Sign Up
+            </Button>
+          </form>
+          <Typography
+            component="p"
+            variant="body2"
+            className="text-center"
+            style={{ marginTop: "16px" }}
+          >
+            Already have an account?{" "}
+            <Link to="/signin" style={{ color: "#F46524" }}>
+              Sign In
+            </Link>
+          </Typography>
         </Container>
       </ThemeProvider>
     </div>
