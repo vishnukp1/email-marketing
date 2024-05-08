@@ -22,7 +22,7 @@ export default function SignUp() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await axios.post("https://ems-server-side.onrender.com/api/register", formData);
+      await axios.post("https://email-marketing-1.onrender.com/api/register", formData);
       navigate("/signin");
     } catch (error) {
       console.error("Error signing up:", error);

@@ -14,9 +14,9 @@ module.exports = {
       password: hashedpassword,
     });
 
-    await user.save();
+    await user.save(); 
 
-    res.status(200).json({
+    res.status(200).json({ 
       status: "Success",
       message: "registarion successfull",
       data: user,

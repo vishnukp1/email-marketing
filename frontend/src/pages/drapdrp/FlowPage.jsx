@@ -8,15 +8,12 @@ import ReactFlow, {
   Background,
 } from "reactflow";
 import "reactflow/dist/style.css";
-
 import Sidebar from "./components/Sidebar";
-
 import "./index.css";
-
 import Axios from "../../auth/Autherization";
 
 import { v4 as uuidv4 } from "uuid";
-import Button from "../../components/Button";
+
 import NodeEditor from "./components/NodeEditor";
 
 const getId = () => uuidv4();
