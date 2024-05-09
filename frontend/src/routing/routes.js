@@ -1,11 +1,12 @@
 import { SignIn, SignUp } from "../cores";
-import FlowPageWithAuth from "../pages/flow-page/FlowPageWithAuth";
+import { FlowPage } from "../pages";
+
 import { homePath, signInPath, signUpPath } from "./route.constant";
 
 const routes = [
   {
     path: homePath,
-    component: FlowPageWithAuth, 
+    component: FlowPage, 
     exact: true,
   },
   {
