@@ -15,6 +15,12 @@ import Axios from "../../auth/Autherization";
 import { v4 as uuidv4 } from "uuid";
 
 import NodeEditor from "./components/NodeEditor";
+import {
+  createFlow,
+  deleteNode,
+  updateNodeLabel,
+  useGetData,
+} from "../../services/apiServices";
 
 const getId = () => uuidv4();
 
@@ -29,6 +35,7 @@ const FlowPage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [sequenceId, setSequenceId] = useState(null);
   const [userId, setUserId] = useState(null);
+  const fetchData = useGetData(`/api/flow/${userId}`);
 
   useEffect(() => {
     const getCurrentUserId = () => {
@@ -39,7 +46,7 @@ const FlowPage = () => {
         const decodedPayload = atob(payload);
 
         const { id } = JSON.parse(decodedPayload);
-       
+
         setUserId(id);
       } else {
         return null;
@@ -48,30 +55,24 @@ const FlowPage = () => {
     getCurrentUserId();
   }, []);
 
- 
-console.log(userId);
   useEffect(() => {
-    const fetchFlows = async () => {
-      try {
-        console.log(userId);
-        const response = await Axios.get(`/api/flow/${userId}`);
-        const flows = response.data.data || [];
-
-        // Extract nodes and edges from each flow object
+    fetchData()
+      .then((data) => {
+        // Extract nodes and edges from the fetched data
+        const flows = data.data;
         const allNodes = flows.flatMap((flow) => flow.nodes);
         const allEdges = flows.flatMap((flow) => flow.edges);
         setNodes(allNodes);
         setEdges(allEdges);
 
+        // Set the sequenceId if flows exist
         if (flows.length > 0) {
           setSequenceId(flows[0].sequenceId);
         }
-      } catch (error) {
+      })
+      .catch((error) => {
         console.error("Error fetching flows:", error);
-      }
-    };
-
-    fetchFlows();
+      });
   }, [userId]);
 
   useEffect(() => {
@@ -99,8 +100,7 @@ console.log(userId);
 
   const onDeleteSelectedNode = async (userId, nodeId) => {
     try {
-      await Axios.delete(`/api/flow/${userId}/node/${nodeId}`);
-      console.log("Node deleted successfully");
+      await deleteNode(userId, nodeId);
 
       // Update the local state to reflect the deletion
       const updatedNodes = nodes.filter((node) => node.id !== selectedNodeId);
@@ -136,9 +136,7 @@ console.log(userId);
         return node;
       });
 
-      await Axios.patch(`/api/flow/${userId}/node/${selectedNodeId}`, {
-        label: editValue,
-      });
+      await updateNodeLabel(userId, selectedNodeId, editValue);
 
       setNodes(updatedNodes);
 
@@ -159,7 +157,6 @@ console.log(userId);
     setEdges((edges) => addEdge(newEdge, edges));
   }, []);
 
-  
   const onDragOver = useCallback((event) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
@@ -195,34 +192,26 @@ console.log(userId);
 
       if (type === "user") {
         try {
-          await Axios.post("/api/createflow", {
-            userId: userId,
-            title: "user1",
-            nodes: [newNode],
-            edges: [edges],
-          });
+          await createFlow("/api/createflow", userId, "user1", [newNode], [edges]);
         } catch (error) {
-          console.error("Error posting flow data:", error);
+          console.error("Error creating flow:", error);
         }
       } else {
         try {
-          await Axios.post("/api/flow", {
-            userId: userId,
-            title: "Your sequence title",
-            nodes: [newNode],
-            edges: [edges],
-          });
+          await createFlow("/api/flow", userId, "Your sequence title", [newNode], [edges]);
         } catch (error) {
-          console.error("Error posting flow data:", error);
+          console.error("Error creating flow:", error);
         }
       }
+      
+      
     },
     [reactFlowInstance, edges]
   );
 
   return (
     <div className="dndflow">
-         {isEditing && (
+      {isEditing && (
         <NodeEditor
           editValue={editValue}
           handleChange={handleChange}
